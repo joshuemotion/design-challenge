@@ -72,6 +72,20 @@ const CATEGORIES = {
       fr: ["Minimaliste","Rétro","Futuriste","Organique","Brutaliste","Ludique","Élégant","Industriel","Art Déco","Memphis","Design suisse","Japonais","Cyberpunk","Bauhaus","Pop Art","Scandinave","Néo-brutaliste","Vaporwave","Cottagecore","Y2K","Glassmorphisme"],
     },
   },
+  accessibility: {
+    label: { en: "Accessibility", fr: "Accessibilité" },
+    items: {
+      en: ["0% accessible", "100% accessible"],
+      fr: ["0% accessible", "100% accessible"],
+    },
+  },
+  ai: {
+    label: { en: "Design with AI", fr: "Design avec IA" },
+    items: {
+      en: ["No AI", "Light AI assist", "Balanced human + AI", "AI-led design", "Full AI generation"],
+      fr: ["Sans IA", "Assistance IA légère", "Équilibre humain + IA", "Design piloté par IA", "Génération 100% IA"],
+    },
+  },
 };
 
 const WILDCARD = {
@@ -216,9 +230,9 @@ const CHAOS_CSS = `
 `;
 
 export default function DesignChallenge() {
-  const [lang, setLang] = useState("en");
+  const [lang, setLang] = useState("fr");
   const [selections, setSelections] = useState(() => {
-    const o = {}; CORE_KEYS.forEach((k) => { o[k] = pick(CATEGORIES[k].items.en); }); return o;
+    const o = {}; CORE_KEYS.forEach((k) => { o[k] = pick(CATEGORIES[k].items.fr); }); return o;
   });
   const [spinTrigger, setSpinTrigger] = useState(0);
   const [spinning, setSpinning] = useState(false);
