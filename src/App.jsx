@@ -20,6 +20,8 @@ const UI = {
     chaosHeroTitle2: "the",
     chaosHeroTitle3: "chaos",
     chaosDesc: "You asked for it. Now design your way out.",
+    difficultyLabel: "Difficulty",
+    difficulty: { easy: "Easy", medium: "Medium", hard: "Hard" },
   },
   fr: {
     siteTitle: "Design Challenge",
@@ -40,53 +42,111 @@ const UI = {
     chaosHeroTitle2: "le",
     chaosHeroTitle3: "chaos",
     chaosDesc: "Tu l'as voulu. Maintenant, design ta sortie.",
+    difficultyLabel: "Difficulté",
+    difficulty: { easy: "Facile", medium: "Moyen", hard: "Difficile" },
   },
 };
+
+const DIFFICULTIES = ["easy", "medium", "hard"];
 
 const CATEGORIES = {
   project: {
     label: { en: "Design a", fr: "Concevoir" },
     items: {
-      en: ["Mobile app","Dashboard","Landing page","E-commerce store","Portfolio site","SaaS platform","Social network","News reader","Booking system","Music player","Chat interface","Settings page","Onboarding flow","Checkout flow","Analytics panel","Calendar app","Email client","File manager","Weather app","Fitness tracker","Recipe app","Travel planner","Banking app","Podcast player","Note-taking app","Task manager","Video platform","Photo editor","Car interface","Flight tracker","Health tracker","Transport app","Car rental app","Design app","Meditation app"],
-      fr: ["Application mobile","Tableau de bord","Page d'accueil","Boutique en ligne","Site portfolio","Plateforme SaaS","Réseau social","Lecteur d'actualités","Système de réservation","Lecteur de musique","Interface de chat","Page de paramètres","Parcours d'onboarding","Tunnel de paiement","Panneau analytique","Agenda","Client email","Gestionnaire de fichiers","App météo","Tracker fitness","App de recettes","Planificateur de voyage","App bancaire","Lecteur de podcasts","App de notes","Gestionnaire de tâches","Plateforme vidéo","Éditeur photo","Interface voiture","Suivi de vols","Tracker santé","App de transport","App de location de voiture","App de design","App de méditation"],
+      en: {
+        easy: ["Landing page","Portfolio site","Settings page","Weather app","Recipe app","Note-taking app","Task manager","Calendar app","News reader","Podcast player","Music player","Meditation app"],
+        medium: ["Mobile app","Dashboard","E-commerce store","SaaS platform","Booking system","Chat interface","Onboarding flow","Checkout flow","Email client","Fitness tracker","Travel planner","Banking app","Video platform","Photo editor","Health tracker","Transport app","Design app"],
+        hard: ["Social network","Analytics panel","File manager","Car interface","Flight tracker","Car rental app"],
+      },
+      fr: {
+        easy: ["Page d'accueil","Site portfolio","Page de paramètres","App météo","App de recettes","App de notes","Gestionnaire de tâches","Agenda","Lecteur d'actualités","Lecteur de podcasts","Lecteur de musique","App de méditation"],
+        medium: ["Application mobile","Tableau de bord","Boutique en ligne","Plateforme SaaS","Système de réservation","Interface de chat","Parcours d'onboarding","Tunnel de paiement","Client email","Tracker fitness","Planificateur de voyage","App bancaire","Plateforme vidéo","Éditeur photo","Tracker santé","App de transport","App de design"],
+        hard: ["Réseau social","Panneau analytique","Gestionnaire de fichiers","Interface voiture","Suivi de vols","App de location de voiture"],
+      },
     },
   },
   industry: {
     label: { en: "For the", fr: "Pour le secteur" },
     items: {
-      en: ["Healthcare","Education","Finance","Real estate","Food & drink","Fashion","Gaming","Music","Travel","Sports","Automotive","Architecture","Agriculture","Space tech","Publishing","Sustainability","Pet care","Wellness","Legal","Logistics","Art & culture","Childcare","Luxury goods","Non-profit"],
-      fr: ["Santé","Éducation","Finance","Immobilier","Alimentation","Mode","Jeux vidéo","Musique","Voyage","Sport","Automobile","Architecture","Agriculture","Spatial","Édition","Développement durable","Animaux","Bien-être","Juridique","Logistique","Art & culture","Petite enfance","Luxe","Associatif"],
+      en: {
+        easy: ["Healthcare","Education","Food & drink","Music","Travel","Sports","Pet care","Wellness"],
+        medium: ["Finance","Real estate","Fashion","Gaming","Automotive","Publishing","Childcare","Non-profit","Art & culture"],
+        hard: ["Architecture","Agriculture","Space tech","Sustainability","Legal","Logistics","Luxury goods"],
+      },
+      fr: {
+        easy: ["Santé","Éducation","Alimentation","Musique","Voyage","Sport","Animaux","Bien-être"],
+        medium: ["Finance","Immobilier","Mode","Jeux vidéo","Automobile","Édition","Petite enfance","Associatif","Art & culture"],
+        hard: ["Architecture","Agriculture","Spatial","Développement durable","Juridique","Logistique","Luxe"],
+      },
     },
   },
   constraint: {
     label: { en: "Constraint", fr: "Contrainte" },
     items: {
-      en: ["No images","One color only","Mobile first","Dark mode only","Under 3 screens","Accessible (AAA)","No text over 16px","Monochrome palette","Maximum 2 fonts","No rounded corners","Horizontal scroll","Card-based layout","Typography only","One page only","No icons","Oversized typography","Asymmetric layout","Grid-based only","Sustainable design","Watch first","TV app","Black & White UI","Only Comic Sans","No AI","Only Vibecoding"],
-      fr: ["Sans images","Une seule couleur","Mobile first","Mode sombre uniquement","Moins de 3 écrans","Accessible (AAA)","Pas de texte au-dessus de 16px","Palette monochrome","Maximum 2 polices","Pas de coins arrondis","Scroll horizontal","Layout en cartes","Typographie uniquement","Une seule page","Sans icônes","Typographie surdimensionnée","Mise en page asymétrique","Grille uniquement","Design durable","Montre d'abord","App TV","Interface noir & blanc","Uniquement Comic Sans","Sans IA","Uniquement Vibecoding"],
+      en: {
+        easy: ["Mobile first","Dark mode only","Card-based layout","Grid-based only","Maximum 2 fonts","Under 3 screens","One page only"],
+        medium: ["No images","One color only","Monochrome palette","No rounded corners","Horizontal scroll","Oversized typography","Asymmetric layout","Sustainable design","Accessible (AAA)"],
+        hard: ["No text over 16px","Typography only","No icons","Watch first","TV app","Black & White UI","Only Comic Sans","No AI","Only Vibecoding"],
+      },
+      fr: {
+        easy: ["Mobile first","Mode sombre uniquement","Layout en cartes","Grille uniquement","Maximum 2 polices","Moins de 3 écrans","Une seule page"],
+        medium: ["Sans images","Une seule couleur","Palette monochrome","Pas de coins arrondis","Scroll horizontal","Typographie surdimensionnée","Mise en page asymétrique","Design durable","Accessible (AAA)"],
+        hard: ["Pas de texte au-dessus de 16px","Typographie uniquement","Sans icônes","Montre d'abord","App TV","Interface noir & blanc","Uniquement Comic Sans","Sans IA","Uniquement Vibecoding"],
+      },
     },
   },
   style: {
     label: { en: "Style", fr: "Style" },
     items: {
-      en: ["Minimalist","Retro","Futuristic","Organic","Brutalist","Playful","Elegant","Industrial","Art Deco","Memphis","Swiss design","Japanese","Cyberpunk","Bauhaus","Pop Art","Scandinavian","Neo-brutalist","Vaporwave","Cottagecore","Y2K","Glassmorphism"],
-      fr: ["Minimaliste","Rétro","Futuriste","Organique","Brutaliste","Ludique","Élégant","Industriel","Art Déco","Memphis","Design suisse","Japonais","Cyberpunk","Bauhaus","Pop Art","Scandinave","Néo-brutaliste","Vaporwave","Cottagecore","Y2K","Glassmorphisme"],
+      en: {
+        easy: ["Minimalist","Elegant","Playful","Scandinavian","Retro","Futuristic"],
+        medium: ["Industrial","Swiss design","Japanese","Pop Art","Bauhaus","Glassmorphism","Cyberpunk"],
+        hard: ["Organic","Brutalist","Art Deco","Memphis","Neo-brutalist","Vaporwave","Cottagecore","Y2K"],
+      },
+      fr: {
+        easy: ["Minimaliste","Élégant","Ludique","Scandinave","Rétro","Futuriste"],
+        medium: ["Industriel","Design suisse","Japonais","Pop Art","Bauhaus","Glassmorphisme","Cyberpunk"],
+        hard: ["Organique","Brutaliste","Art Déco","Memphis","Néo-brutaliste","Vaporwave","Cottagecore","Y2K"],
+      },
     },
   },
   accessibility: {
     label: { en: "Accessibility", fr: "Accessibilité" },
     items: {
-      en: ["0% accessible", "100% accessible"],
-      fr: ["0% accessible", "100% accessible"],
+      en: {
+        easy: ["0% accessible","100% accessible"],
+        medium: ["0% accessible","100% accessible"],
+        hard: ["0% accessible","100% accessible"],
+      },
+      fr: {
+        easy: ["0% accessible","100% accessible"],
+        medium: ["0% accessible","100% accessible"],
+        hard: ["0% accessible","100% accessible"],
+      },
     },
   },
   ai: {
     label: { en: "Design with AI", fr: "Design avec IA" },
-    items: {
+    isSlider: true,
+    levels: {
       en: ["No AI", "Light AI assist", "Balanced human + AI", "AI-led design", "Full AI generation"],
       fr: ["Sans IA", "Assistance IA légère", "Équilibre humain + IA", "Design piloté par IA", "Génération 100% IA"],
     },
   },
 };
+
+function itemsFor(key, lang, difficulty) {
+  const cat = CATEGORIES[key];
+  if (cat.isSlider) return cat.levels[lang];
+  return cat.items[lang][difficulty];
+}
+
+function allItemsFlat(key, lang) {
+  const cat = CATEGORIES[key];
+  if (cat.isSlider) return cat.levels[lang];
+  const i = cat.items[lang];
+  return [...i.easy, ...i.medium, ...i.hard];
+}
 
 const WILDCARD = {
   label: { en: "Plot twist", fr: "Grain de folie" },
@@ -97,6 +157,7 @@ const WILDCARD = {
 };
 
 const CORE_KEYS = Object.keys(CATEGORIES);
+const SLOT_KEYS = CORE_KEYS.filter((k) => !CATEGORIES[k].isSlider);
 const ACCENT_COLORS = [
   { bg: "#FF4D00", text: "#fff" },{ bg: "#0047FF", text: "#fff" },
   { bg: "#00C853", text: "#000" },{ bg: "#FF006E", text: "#fff" },
@@ -200,6 +261,58 @@ function SlotCard({ items, value, spinTrigger, delay, accentColor, locked, chaos
   return <CardBox text={animating ? rolling : value} accent={accentColor} isAccent={animating && !locked} locked={locked} accentColor={accentColor} chaos={chaos} rotation={rotation} />;
 }
 
+function SliderCard({ levels, value, onChange, accentColor, chaos }) {
+  const max = levels.length - 1;
+  const accentBg = chaos ? "#FF4D00" : accentColor.bg;
+  return (
+    <div style={{
+      position: "relative",
+      background: "transparent",
+      border: chaos ? "1.5px solid #333" : "1.5px solid #222",
+      borderRadius: chaos ? "0px" : "2px",
+      padding: "20px 24px", minHeight: "36px",
+      display: "flex", flexDirection: "column", gap: "14px",
+      transition: "all 0.5s cubic-bezier(0.23, 1, 0.32, 1)",
+    }}>
+      <span style={{
+        fontFamily: chaos ? "'Space Mono', monospace" : "'Clash Display', 'Satoshi', sans-serif",
+        fontSize: chaos ? "clamp(15px, 3vw, 22px)" : "clamp(18px, 3.5vw, 26px)",
+        fontWeight: 600,
+        color: chaos ? "#FF4D00" : "#111",
+        letterSpacing: chaos ? "0px" : "-0.5px",
+        lineHeight: 1.2,
+        textTransform: chaos ? "uppercase" : "none",
+        transition: "color 0.4s ease",
+      }}>{levels[value]}</span>
+      <input
+        type="range"
+        min={0}
+        max={max}
+        step={1}
+        value={value}
+        onChange={(e) => onChange(Number(e.target.value))}
+        aria-label="AI level"
+        style={{
+          width: "100%",
+          accentColor: accentBg,
+          cursor: "pointer",
+          margin: 0,
+        }}
+      />
+      <div style={{
+        display: "flex", justifyContent: "space-between",
+        fontFamily: "'Space Mono', monospace",
+        fontSize: "9px", letterSpacing: "1.5px",
+        textTransform: "uppercase",
+        color: chaos ? "#444" : "#aaa",
+      }}>
+        <span>{levels[0]}</span>
+        <span>{levels[max]}</span>
+      </div>
+    </div>
+  );
+}
+
 const CHAOS_CSS = `
 @keyframes flameWiggle {
   0% { transform: rotate(-6deg) scaleY(1); }
@@ -231,8 +344,10 @@ const CHAOS_CSS = `
 
 export default function DesignChallenge() {
   const [lang, setLang] = useState("fr");
+  const [difficulty, setDifficulty] = useState("medium");
+  const [aiLevel, setAiLevel] = useState(2);
   const [selections, setSelections] = useState(() => {
-    const o = {}; CORE_KEYS.forEach((k) => { o[k] = pick(CATEGORIES[k].items.fr); }); return o;
+    const o = {}; SLOT_KEYS.forEach((k) => { o[k] = pick(itemsFor(k, "fr", "medium")); }); return o;
   });
   const [spinTrigger, setSpinTrigger] = useState(0);
   const [spinning, setSpinning] = useState(false);
@@ -244,24 +359,27 @@ export default function DesignChallenge() {
   const [wildcardAnim, setWildcardAnim] = useState(null);
   const [chaosMode, setChaosMode] = useState(false);
   const [flameHover, setFlameHover] = useState(false);
+  const didMount = useRef(false);
 
   const t = UI[lang];
 
   const generateAll = useCallback(() => {
     if (spinning) return;
     const next = {};
-    CORE_KEYS.forEach((k) => { next[k] = locks.has(k) && selections[k] ? selections[k] : pick(CATEGORIES[k].items[lang]); });
+    SLOT_KEYS.forEach((k) => {
+      next[k] = locks.has(k) && selections[k] ? selections[k] : pick(itemsFor(k, lang, difficulty));
+    });
     setAccent(ACCENT_COLORS[count % ACCENT_COLORS.length]);
     setSelections(next);
     setSpinTrigger((n) => n + 1);
     setSpinning(true); setGenerated(true); setCount((n) => n + 1);
     setTimeout(() => setSpinning(false), 1500);
-  }, [spinning, count, selections, locks, lang]);
+  }, [spinning, count, selections, locks, lang, difficulty]);
 
   const shuffleSingle = useCallback((key) => {
-    if (spinning || locks.has(key)) return;
-    setSelections((prev) => ({ ...prev, [key]: pickNew(CATEGORIES[key].items[lang], prev[key]) }));
-  }, [spinning, locks, lang]);
+    if (spinning || locks.has(key) || CATEGORIES[key].isSlider) return;
+    setSelections((prev) => ({ ...prev, [key]: pickNew(itemsFor(key, lang, difficulty), prev[key]) }));
+  }, [spinning, locks, lang, difficulty]);
 
   const toggleLock = useCallback((key) => {
     if (spinning) return;
@@ -295,11 +413,11 @@ export default function DesignChallenge() {
   useEffect(() => {
     setSelections((prev) => {
       const next = {};
-      CORE_KEYS.forEach((k) => {
-        const oldI = CATEGORIES[k].items[lang === "en" ? "fr" : "en"];
-        const newI = CATEGORIES[k].items[lang];
-        const idx = oldI.indexOf(prev[k]);
-        next[k] = idx >= 0 ? newI[idx] : pick(newI);
+      SLOT_KEYS.forEach((k) => {
+        const oldFlat = allItemsFlat(k, lang === "en" ? "fr" : "en");
+        const newFlat = allItemsFlat(k, lang);
+        const idx = oldFlat.indexOf(prev[k]);
+        next[k] = idx >= 0 ? newFlat[idx] : pick(itemsFor(k, lang, difficulty));
       });
       return next;
     });
@@ -311,7 +429,20 @@ export default function DesignChallenge() {
     }
   }, [lang]);
 
-  const totalCombos = CORE_KEYS.reduce((t, k) => t * CATEGORIES[k].items.en.length, 1);
+  useEffect(() => {
+    if (!didMount.current) { didMount.current = true; return; }
+    setSelections((prev) => {
+      const next = { ...prev };
+      SLOT_KEYS.forEach((k) => {
+        if (locks.has(k)) return;
+        const pool = itemsFor(k, lang, difficulty);
+        if (!pool.includes(prev[k])) next[k] = pick(pool);
+      });
+      return next;
+    });
+  }, [difficulty]);
+
+  const totalCombos = SLOT_KEYS.reduce((acc, k) => acc * itemsFor(k, "en", difficulty).length, 1) * CATEGORIES.ai.levels.en.length;
   const cm = chaosMode;
 
   return (
@@ -437,6 +568,49 @@ export default function DesignChallenge() {
         position: "relative", zIndex: 10,
         padding: "clamp(32px, 5vw, 56px) clamp(20px, 5vw, 48px)",
       }}>
+        {/* Difficulty slider */}
+        <div style={{
+          maxWidth: "1100px", marginBottom: "clamp(24px, 4vw, 40px)",
+          display: "flex", alignItems: "center", gap: "16px", flexWrap: "wrap",
+        }}>
+          <div style={{
+            fontSize: "11px", fontFamily: "'Space Mono', monospace",
+            textTransform: "uppercase", letterSpacing: "2.5px",
+            color: cm ? "#FF4D00" : accent.bg,
+          }}>{t.difficultyLabel}</div>
+          <div style={{
+            display: "flex", alignItems: "center", gap: "8px",
+            flex: 1, minWidth: "220px", maxWidth: "360px",
+          }}>
+            <input
+              type="range"
+              min={0}
+              max={DIFFICULTIES.length - 1}
+              step={1}
+              value={DIFFICULTIES.indexOf(difficulty)}
+              onChange={(e) => setDifficulty(DIFFICULTIES[Number(e.target.value)])}
+              aria-label={t.difficultyLabel}
+              style={{ flex: 1, accentColor: cm ? "#FF4D00" : accent.bg, cursor: "pointer" }}
+            />
+          </div>
+          <div style={{
+            display: "flex", gap: "12px",
+            fontFamily: "'Space Mono', monospace", fontSize: "10px",
+            letterSpacing: "1.5px", textTransform: "uppercase",
+          }}>
+            {DIFFICULTIES.map((d) => (
+              <button key={d} onClick={() => setDifficulty(d)} style={{
+                background: "none", border: "none", padding: "2px 4px", cursor: "pointer",
+                fontFamily: "inherit", fontSize: "inherit", letterSpacing: "inherit",
+                textTransform: "inherit",
+                color: difficulty === d ? (cm ? "#FF4D00" : accent.bg) : cm ? "#444" : "#bbb",
+                fontWeight: difficulty === d ? 700 : 400,
+                transition: "color 0.2s ease",
+              }}>{t.difficulty[d]}</button>
+            ))}
+          </div>
+        </div>
+
         <div style={{
           display: "grid",
           gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 280px), 1fr))",
@@ -445,6 +619,7 @@ export default function DesignChallenge() {
           transition: "gap 0.5s ease",
         }}>
           {CORE_KEYS.map((key, i) => {
+            const cat = CATEGORIES[key];
             const isLocked = locks.has(key);
             const canLock = locks.size < 2 || isLocked;
             return (
@@ -457,8 +632,8 @@ export default function DesignChallenge() {
                     textTransform: "uppercase", letterSpacing: "2.5px",
                     color: isLocked ? (cm ? "#FF4D00" : accent.bg) : cm ? "#444" : "#999",
                     transition: "color 0.3s",
-                  }}>{CATEGORIES[key].label[lang]}</div>
-                  {generated && !spinning && (
+                  }}>{cat.label[lang]}</div>
+                  {!cat.isSlider && generated && !spinning && (
                     <div style={{ display: "flex", alignItems: "center", gap: "2px" }}>
                       {!isLocked && (
                         <button onClick={() => shuffleSingle(key)} aria-label="Shuffle" style={{
@@ -487,16 +662,26 @@ export default function DesignChallenge() {
                     </div>
                   )}
                 </div>
-                <SlotCard
-                  items={CATEGORIES[key].items[lang]}
-                  value={selections[key]}
-                  spinTrigger={spinTrigger}
-                  delay={i * 120}
-                  accentColor={accent}
-                  locked={isLocked}
-                  chaos={cm}
-                  rotation={CHAOS_ROTATIONS[i % CHAOS_ROTATIONS.length]}
-                />
+                {cat.isSlider ? (
+                  <SliderCard
+                    levels={cat.levels[lang]}
+                    value={aiLevel}
+                    onChange={setAiLevel}
+                    accentColor={accent}
+                    chaos={cm}
+                  />
+                ) : (
+                  <SlotCard
+                    items={itemsFor(key, lang, difficulty)}
+                    value={selections[key]}
+                    spinTrigger={spinTrigger}
+                    delay={i * 120}
+                    accentColor={accent}
+                    locked={isLocked}
+                    chaos={cm}
+                    rotation={CHAOS_ROTATIONS[i % CHAOS_ROTATIONS.length]}
+                  />
+                )}
               </div>
             );
           })}
