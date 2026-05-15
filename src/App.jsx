@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 
+const SUBMIT_FORM_URL = "https://forms.google.com/";
+
 const UI = {
   en: {
     siteTitle: "Design Challenge",
@@ -20,6 +22,10 @@ const UI = {
     chaosHeroTitle2: "the",
     chaosHeroTitle3: "chaos",
     chaosDesc: "You asked for it. Now design your way out.",
+    copyBtn: "Copy brief",
+    copiedBtn: "Copied!",
+    submitWorkBtn: "Submit your work",
+    plotTwistLabel: "Plot twist",
   },
   fr: {
     siteTitle: "Design Challenge",
@@ -40,6 +46,10 @@ const UI = {
     chaosHeroTitle2: "le",
     chaosHeroTitle3: "chaos",
     chaosDesc: "Tu l'as voulu. Maintenant, design ta sortie.",
+    copyBtn: "Copier le brief",
+    copiedBtn: "Copié !",
+    submitWorkBtn: "Envoyer votre travail",
+    plotTwistLabel: "Grain de folie",
   },
 };
 
@@ -124,6 +134,15 @@ function FlameIcon({ size = 18, animated = false }) {
 }
 function XIcon({ size = 12 }) {
   return (<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>);
+}
+function CopyIcon({ size = 16 }) {
+  return (<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2" /><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" /></svg>);
+}
+function CheckIcon({ size = 16 }) {
+  return (<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>);
+}
+function ExternalLinkIcon({ size = 16 }) {
+  return (<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" /></svg>);
 }
 
 function CardBox({ text, accent, isAccent, locked, accentColor, chaos, rotation }) {
@@ -230,8 +249,46 @@ export default function DesignChallenge() {
   const [wildcardAnim, setWildcardAnim] = useState(null);
   const [chaosMode, setChaosMode] = useState(false);
   const [flameHover, setFlameHover] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const t = UI[lang];
+
+  const buildBriefText = useCallback(() => {
+    const lines = [
+      `${t.briefLabel}${count > 0 ? ` #${String(count).padStart(3, "0")}` : ""}`,
+      "",
+    ];
+    CORE_KEYS.forEach((k) => {
+      lines.push(`${CATEGORIES[k].label[lang]}: ${selections[k]}`);
+    });
+    if (wildcard) {
+      lines.push("");
+      lines.push(`${t.plotTwistLabel}: ${wildcard}`);
+    }
+    return lines.join("\n");
+  }, [count, selections, wildcard, lang, t]);
+
+  const copyBrief = useCallback(async () => {
+    const text = buildBriefText();
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+      } else {
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        ta.style.position = "fixed";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+      }
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1800);
+    } catch (e) {
+      console.error("Copy failed", e);
+    }
+  }, [buildBriefText]);
 
   const generateAll = useCallback(() => {
     if (spinning) return;
@@ -582,6 +639,43 @@ export default function DesignChallenge() {
               {t.wildcardBtn}
             </button>
           )}
+
+          {generated && !spinning && (
+            <button
+              onClick={copyBrief}
+              aria-label={t.copyBtn}
+              style={{
+                display: "inline-flex", alignItems: "center", gap: "8px",
+                fontFamily: cm ? "'Space Mono', monospace" : "'Clash Display', 'Satoshi', sans-serif",
+                fontSize: "clamp(13px, 2vw, 15px)", fontWeight: 600,
+                letterSpacing: "-0.2px",
+                color: copied ? (cm ? "#FF4D00" : accent.bg) : cm ? "#888" : "#555",
+                background: "transparent",
+                border: copied
+                  ? `1.5px solid ${cm ? "#FF4D00" : accent.bg}`
+                  : cm ? "1.5px solid #333" : "1.5px solid #ddd",
+                borderRadius: cm ? "0px" : "2px",
+                padding: "17px 28px", cursor: "pointer",
+                textTransform: cm ? "uppercase" : "none",
+                transition: "all 0.2s ease",
+              }}
+              onMouseEnter={(e) => {
+                if (!copied) {
+                  e.currentTarget.style.borderColor = cm ? "#FF4D00" : "#111";
+                  e.currentTarget.style.color = cm ? "#FF4D00" : "#111";
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!copied) {
+                  e.currentTarget.style.borderColor = cm ? "#333" : "#ddd";
+                  e.currentTarget.style.color = cm ? "#888" : "#555";
+                }
+              }}
+            >
+              {copied ? <CheckIcon size={16} /> : <CopyIcon size={16} />}
+              {copied ? t.copiedBtn : t.copyBtn}
+            </button>
+          )}
         </div>
 
         {count > 0 && (
@@ -598,7 +692,7 @@ export default function DesignChallenge() {
         borderTop: cm ? "1.5px solid #1a1a1a" : "1.5px solid #eee",
         padding: "24px clamp(20px, 5vw, 48px)",
         display: "flex", justifyContent: "space-between", alignItems: "center",
-        flexWrap: "wrap", gap: "12px",
+        flexWrap: "wrap", gap: "16px",
         transition: "border-color 0.5s ease",
       }}>
         <div style={{
@@ -606,11 +700,43 @@ export default function DesignChallenge() {
           letterSpacing: "2px", textTransform: "uppercase",
           color: cm ? "#222" : "#bbb", transition: "color 0.5s ease",
         }}>{t.footer}</div>
-        <div style={{
-          fontFamily: "'Space Mono', monospace", fontSize: "10px",
-          letterSpacing: "1.5px",
-          color: cm ? "#222" : "#ccc", transition: "color 0.5s ease",
-        }}>{totalCombos.toLocaleString()}+ {t.combinations}</div>
+        <div style={{ display: "flex", alignItems: "center", gap: "20px", flexWrap: "wrap" }}>
+          <a
+            href={SUBMIT_FORM_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: "inline-flex", alignItems: "center", gap: "8px",
+              fontFamily: "'Space Mono', monospace",
+              fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase",
+              fontWeight: 700,
+              color: cm ? "#FF4D00" : "#111",
+              background: "transparent",
+              border: cm ? "1.5px solid #FF4D00" : "1.5px solid #111",
+              borderRadius: cm ? "0px" : "2px",
+              padding: "10px 16px",
+              textDecoration: "none",
+              cursor: "pointer",
+              transition: "all 0.2s ease",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = cm ? "#FF4D00" : "#111";
+              e.currentTarget.style.color = cm ? "#000" : "#fff";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = "transparent";
+              e.currentTarget.style.color = cm ? "#FF4D00" : "#111";
+            }}
+          >
+            <ExternalLinkIcon size={12} />
+            {t.submitWorkBtn}
+          </a>
+          <div style={{
+            fontFamily: "'Space Mono', monospace", fontSize: "10px",
+            letterSpacing: "1.5px",
+            color: cm ? "#222" : "#ccc", transition: "color 0.5s ease",
+          }}>{totalCombos.toLocaleString()}+ {t.combinations}</div>
+        </div>
       </footer>
     </div>
   );
