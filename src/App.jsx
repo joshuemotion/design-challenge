@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 
-const SUBMIT_FORM_URL = "https://forms.google.com/";
+const SUBMIT_FORM_URL = "https://cooked-jingle-108.notion.site/36493a2e6d9e80ff962afc47b822dffd?pvs=105";
 
 const UI = {
   en: {
@@ -235,9 +235,9 @@ const CHAOS_CSS = `
 `;
 
 export default function DesignChallenge() {
-  const [lang, setLang] = useState("en");
+  const [lang, setLang] = useState("fr");
   const [selections, setSelections] = useState(() => {
-    const o = {}; CORE_KEYS.forEach((k) => { o[k] = pick(CATEGORIES[k].items.en); }); return o;
+    const o = {}; CORE_KEYS.forEach((k) => { o[k] = pick(CATEGORIES[k].items.fr); }); return o;
   });
   const [spinTrigger, setSpinTrigger] = useState(0);
   const [spinning, setSpinning] = useState(false);
@@ -473,6 +473,37 @@ export default function DesignChallenge() {
           letterSpacing: cm ? "0.5px" : "0px",
           transition: "all 0.5s ease",
         }}>{cm ? t.chaosDesc : t.heroDesc}</p>
+        <a
+          href={SUBMIT_FORM_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            display: "inline-flex", alignItems: "center", gap: "8px",
+            marginTop: "24px",
+            fontFamily: "'Space Mono', monospace",
+            fontSize: "11px", letterSpacing: "2px", textTransform: "uppercase",
+            fontWeight: 700,
+            color: cm ? "#FF4D00" : "#111",
+            background: "transparent",
+            border: cm ? "1.5px solid #FF4D00" : "1.5px solid #111",
+            borderRadius: cm ? "0px" : "2px",
+            padding: "12px 20px",
+            textDecoration: "none",
+            cursor: "pointer",
+            transition: "all 0.2s ease",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = cm ? "#FF4D00" : "#111";
+            e.currentTarget.style.color = cm ? "#000" : "#fff";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = "transparent";
+            e.currentTarget.style.color = cm ? "#FF4D00" : "#111";
+          }}
+        >
+          <ExternalLinkIcon size={13} />
+          {t.submitWorkBtn}
+        </a>
       </section>
 
       {/* Cards */}
@@ -692,7 +723,7 @@ export default function DesignChallenge() {
         borderTop: cm ? "1.5px solid #1a1a1a" : "1.5px solid #eee",
         padding: "24px clamp(20px, 5vw, 48px)",
         display: "flex", justifyContent: "space-between", alignItems: "center",
-        flexWrap: "wrap", gap: "16px",
+        flexWrap: "wrap", gap: "12px",
         transition: "border-color 0.5s ease",
       }}>
         <div style={{
@@ -700,43 +731,11 @@ export default function DesignChallenge() {
           letterSpacing: "2px", textTransform: "uppercase",
           color: cm ? "#222" : "#bbb", transition: "color 0.5s ease",
         }}>{t.footer}</div>
-        <div style={{ display: "flex", alignItems: "center", gap: "20px", flexWrap: "wrap" }}>
-          <a
-            href={SUBMIT_FORM_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              display: "inline-flex", alignItems: "center", gap: "8px",
-              fontFamily: "'Space Mono', monospace",
-              fontSize: "10px", letterSpacing: "2px", textTransform: "uppercase",
-              fontWeight: 700,
-              color: cm ? "#FF4D00" : "#111",
-              background: "transparent",
-              border: cm ? "1.5px solid #FF4D00" : "1.5px solid #111",
-              borderRadius: cm ? "0px" : "2px",
-              padding: "10px 16px",
-              textDecoration: "none",
-              cursor: "pointer",
-              transition: "all 0.2s ease",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = cm ? "#FF4D00" : "#111";
-              e.currentTarget.style.color = cm ? "#000" : "#fff";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = "transparent";
-              e.currentTarget.style.color = cm ? "#FF4D00" : "#111";
-            }}
-          >
-            <ExternalLinkIcon size={12} />
-            {t.submitWorkBtn}
-          </a>
-          <div style={{
-            fontFamily: "'Space Mono', monospace", fontSize: "10px",
-            letterSpacing: "1.5px",
-            color: cm ? "#222" : "#ccc", transition: "color 0.5s ease",
-          }}>{totalCombos.toLocaleString()}+ {t.combinations}</div>
-        </div>
+        <div style={{
+          fontFamily: "'Space Mono', monospace", fontSize: "10px",
+          letterSpacing: "1.5px",
+          color: cm ? "#222" : "#ccc", transition: "color 0.5s ease",
+        }}>{totalCombos.toLocaleString()}+ {t.combinations}</div>
       </footer>
     </div>
   );
