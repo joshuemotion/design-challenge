@@ -26,6 +26,18 @@ const UI = {
     copiedBtn: "Copied!",
     submitWorkBtn: "Submit your work",
     plotTwistLabel: "Plot twist",
+    docTitle: "Design Challenge — Generate UI design briefs",
+    skipToContent: "Skip to main content",
+    langToggleAria: "Switch language. Current language: English",
+    shuffleAria: "Shuffle this category",
+    lockAria: "Lock this category",
+    unlockAria: "Unlock this category",
+    lockLimitAria: "Lock limit reached. Unlock another category first.",
+    shuffleWildcardAria: "Shuffle plot twist",
+    removeWildcardAria: "Remove plot twist and exit chaos mode",
+    opensInNewTab: "(opens in new tab)",
+    generatingAria: "Generating new brief",
+    briefRegionLabel: "Generated brief",
   },
   fr: {
     siteTitle: "Design Challenge",
@@ -50,6 +62,18 @@ const UI = {
     copiedBtn: "Copié !",
     submitWorkBtn: "Envoyer votre travail",
     plotTwistLabel: "Grain de folie",
+    docTitle: "Design Challenge — Générateur de briefs de design UI",
+    skipToContent: "Aller au contenu principal",
+    langToggleAria: "Changer de langue. Langue actuelle : français",
+    shuffleAria: "Mélanger cette catégorie",
+    lockAria: "Verrouiller cette catégorie",
+    unlockAria: "Déverrouiller cette catégorie",
+    lockLimitAria: "Limite de verrous atteinte. Déverrouillez d'abord une autre catégorie.",
+    shuffleWildcardAria: "Mélanger le grain de folie",
+    removeWildcardAria: "Retirer le grain de folie et sortir du mode chaos",
+    opensInNewTab: "(ouvre dans un nouvel onglet)",
+    generatingAria: "Génération d'un nouveau brief en cours",
+    briefRegionLabel: "Brief généré",
   },
 };
 
@@ -145,18 +169,24 @@ function ExternalLinkIcon({ size = 16 }) {
   return (<svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /><polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" /></svg>);
 }
 
-function CardBox({ text, accent, isAccent, locked, accentColor, chaos, rotation }) {
-  return (
-    <div style={{
-      position: "relative",
-      background: chaos && !isAccent ? "#111" : isAccent ? accent.bg : "transparent",
-      border: isAccent ? "1.5px solid transparent" : locked ? "1.5px solid " + accentColor.bg : chaos ? "1.5px solid #333" : "1.5px solid #222",
-      borderRadius: chaos ? "0px" : "2px",
-      padding: "20px 24px", minHeight: "36px",
-      display: "flex", alignItems: "center",
-      transition: "all 0.5s cubic-bezier(0.23, 1, 0.32, 1)",
-      transform: chaos && !isAccent ? `rotate(${rotation || 0}deg)` : "rotate(0deg)",
-    }}>
+function CardBox({ text, accent, isAccent, locked, accentColor, chaos, rotation, onClick, ariaLabel }) {
+  const interactive = typeof onClick === "function";
+  const baseStyle = {
+    position: "relative",
+    width: "100%",
+    textAlign: "left",
+    font: "inherit",
+    background: chaos && !isAccent ? "#111" : isAccent ? accent.bg : "transparent",
+    border: isAccent ? "1.5px solid transparent" : locked ? "1.5px solid " + accentColor.bg : chaos ? "1.5px solid #333" : "1.5px solid #222",
+    borderRadius: chaos ? "0px" : "2px",
+    padding: "20px 24px", minHeight: "36px",
+    display: "flex", alignItems: "center",
+    transition: "all 0.5s cubic-bezier(0.23, 1, 0.32, 1)",
+    transform: chaos && !isAccent ? `rotate(${rotation || 0}deg)` : "rotate(0deg)",
+    cursor: interactive ? "pointer" : "default",
+  };
+  const inner = (
+    <>
       {locked && !isAccent && (
         <div style={{
           position: "absolute", top: "-1px", right: "-1px",
@@ -176,8 +206,22 @@ function CardBox({ text, accent, isAccent, locked, accentColor, chaos, rotation 
         transition: "all 0.5s cubic-bezier(0.23, 1, 0.32, 1)",
         textTransform: chaos ? "uppercase" : "none",
       }}>{text}</span>
-    </div>
+    </>
   );
+  if (interactive) {
+    return (
+      <button
+        type="button"
+        onClick={onClick}
+        aria-label={ariaLabel}
+        className="card-box-interactive"
+        style={baseStyle}
+      >
+        {inner}
+      </button>
+    );
+  }
+  return <div style={baseStyle}>{inner}</div>;
 }
 
 function SlotCard({ items, value, spinTrigger, delay, accentColor, locked, chaos, rotation }) {
@@ -231,6 +275,40 @@ const CHAOS_CSS = `
 @keyframes chaosFloat {
   0%, 100% { transform: translateY(0px) rotate(0deg); }
   50% { transform: translateY(-8px) rotate(2deg); }
+}
+.visually-hidden {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0);
+  white-space: nowrap; border: 0;
+}
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 12px;
+  z-index: 100;
+  background: #111;
+  color: #fff;
+  padding: 10px 16px;
+  font-family: 'Space Mono', monospace;
+  font-size: 13px;
+  text-decoration: none;
+  border-radius: 2px;
+  transition: top 0.15s ease;
+}
+.skip-link:focus { top: 12px; outline: 3px solid #FF4D00; outline-offset: 2px; }
+.dc-focusable:focus-visible,
+.card-box-interactive:focus-visible {
+  outline: 3px solid #FF4D00;
+  outline-offset: 3px;
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
 }
 `;
 
@@ -336,6 +414,11 @@ export default function DesignChallenge() {
   useEffect(() => { generateAll(); }, []);
 
   useEffect(() => {
+    document.documentElement.lang = lang;
+    document.title = t.docTitle;
+  }, [lang, t.docTitle]);
+
+  useEffect(() => {
     setSelections((prev) => {
       const next = {};
       CORE_KEYS.forEach((k) => {
@@ -366,7 +449,7 @@ export default function DesignChallenge() {
       transition: "background 0.6s cubic-bezier(0.23, 1, 0.32, 1)",
     }}>
       <style>{CHAOS_CSS}</style>
-  
+      <a href="#main-content" className="skip-link">{t.skipToContent}</a>
 
       <div style={{
         position: "fixed", inset: 0, pointerEvents: "none", zIndex: 0,
@@ -414,38 +497,44 @@ export default function DesignChallenge() {
           }}>{t.siteTitle}</span>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
-          <button onClick={() => setLang((l) => l === "en" ? "fr" : "en")} style={{
-            fontFamily: "'Space Mono', monospace", fontSize: "11px", letterSpacing: "1.5px",
-            textTransform: "uppercase", background: "none",
-            border: cm ? "1.5px solid #333" : "1.5px solid #ddd",
-            borderRadius: cm ? "0px" : "2px", padding: "6px 14px", cursor: "pointer",
-            color: cm ? "#666" : "#555",
-            display: "flex", alignItems: "center", gap: "6px",
-            transition: "all 0.4s ease",
-          }}
+          <button
+            onClick={() => setLang((l) => l === "en" ? "fr" : "en")}
+            aria-label={t.langToggleAria}
+            className="dc-focusable"
+            style={{
+              fontFamily: "'Space Mono', monospace", fontSize: "11px", letterSpacing: "1.5px",
+              textTransform: "uppercase", background: "none",
+              border: cm ? "1.5px solid #555" : "1.5px solid #767676",
+              borderRadius: cm ? "0px" : "2px", padding: "8px 14px", cursor: "pointer",
+              minHeight: "32px",
+              color: cm ? "#bbb" : "#333",
+              display: "flex", alignItems: "center", gap: "6px",
+              transition: "all 0.4s ease",
+            }}
             onMouseEnter={(e) => { e.currentTarget.style.borderColor = cm ? "#FF4D00" : "#111"; e.currentTarget.style.color = cm ? "#FF4D00" : "#111"; }}
-            onMouseLeave={(e) => { e.currentTarget.style.borderColor = cm ? "#333" : "#ddd"; e.currentTarget.style.color = cm ? "#666" : "#555"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.borderColor = cm ? "#555" : "#767676"; e.currentTarget.style.color = cm ? "#bbb" : "#333"; }}
           >
-            <span style={{ opacity: lang === "en" ? 1 : 0.4, fontWeight: lang === "en" ? 700 : 400 }}>EN</span>
-            <span style={{ color: cm ? "#333" : "#ccc" }}>/</span>
-            <span style={{ opacity: lang === "fr" ? 1 : 0.4, fontWeight: lang === "fr" ? 700 : 400 }}>FR</span>
+            <span aria-hidden="true" style={{ opacity: lang === "en" ? 1 : 0.55, fontWeight: lang === "en" ? 700 : 400 }}>EN</span>
+            <span aria-hidden="true" style={{ color: cm ? "#666" : "#888" }}>/</span>
+            <span aria-hidden="true" style={{ opacity: lang === "fr" ? 1 : 0.55, fontWeight: lang === "fr" ? 700 : 400 }}>FR</span>
           </button>
           <div style={{
             fontFamily: "'Space Mono', monospace", fontSize: "11px",
             letterSpacing: "1.5px", textTransform: "uppercase",
-            color: cm ? "#333" : "#999", transition: "color 0.5s ease",
+            color: cm ? "#bbb" : "#5a5a5a", transition: "color 0.5s ease",
           }}>{t.tagline}</div>
         </div>
       </header>
 
+      <main id="main-content">
       {/* Hero */}
-      <section style={{
+      <section aria-labelledby="dc-hero-title" style={{
         position: "relative", zIndex: 10,
         padding: "clamp(40px, 8vw, 80px) clamp(20px, 5vw, 48px) clamp(24px, 4vw, 40px)",
         borderBottom: cm ? "1.5px solid #222" : "1.5px solid #111",
         transition: "border-color 0.5s ease",
       }}>
-        <h1 style={{
+        <h1 id="dc-hero-title" style={{
           fontFamily: cm ? "'Space Mono', monospace" : "'Clash Display', 'Satoshi', sans-serif",
           fontSize: "clamp(36px, 8vw, 72px)", fontWeight: 700,
           lineHeight: 1.0,
@@ -468,7 +557,7 @@ export default function DesignChallenge() {
         <p style={{
           fontFamily: cm ? "'Space Mono', monospace" : "'Satoshi', sans-serif",
           fontSize: cm ? "clamp(12px, 1.5vw, 14px)" : "clamp(14px, 2vw, 17px)",
-          color: cm ? "#555" : "#777",
+          color: cm ? "#bbbbbb" : "#5a5a5a",
           marginTop: "20px", maxWidth: "480px", lineHeight: 1.6,
           letterSpacing: cm ? "0.5px" : "0px",
           transition: "all 0.5s ease",
@@ -477,6 +566,7 @@ export default function DesignChallenge() {
           href={SUBMIT_FORM_URL}
           target="_blank"
           rel="noopener noreferrer"
+          className="dc-focusable"
           style={{
             display: "inline-flex", alignItems: "center", gap: "8px",
             marginTop: "24px",
@@ -488,6 +578,7 @@ export default function DesignChallenge() {
             border: cm ? "1.5px solid #FF4D00" : "1.5px solid #111",
             borderRadius: cm ? "0px" : "2px",
             padding: "12px 20px",
+            minHeight: "44px",
             textDecoration: "none",
             cursor: "pointer",
             transition: "all 0.2s ease",
@@ -503,14 +594,18 @@ export default function DesignChallenge() {
         >
           <ExternalLinkIcon size={13} />
           {t.submitWorkBtn}
+          <span className="visually-hidden">{t.opensInNewTab}</span>
         </a>
       </section>
 
       {/* Cards */}
-      <section style={{
-        position: "relative", zIndex: 10,
-        padding: "clamp(32px, 5vw, 56px) clamp(20px, 5vw, 48px)",
-      }}>
+      <section
+        aria-label={t.briefRegionLabel}
+        aria-busy={spinning}
+        style={{
+          position: "relative", zIndex: 10,
+          padding: "clamp(32px, 5vw, 56px) clamp(20px, 5vw, 48px)",
+        }}>
         <div style={{
           display: "grid",
           gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 280px), 1fr))",
@@ -533,30 +628,39 @@ export default function DesignChallenge() {
                     transition: "color 0.3s",
                   }}>{CATEGORIES[key].label[lang]}</div>
                   {generated && !spinning && (
-                    <div style={{ display: "flex", alignItems: "center", gap: "2px" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
                       {!isLocked && (
-                        <button onClick={() => shuffleSingle(key)} aria-label="Shuffle" style={{
-                          background: "none", border: "none", cursor: "pointer",
-                          color: cm ? "#444" : "#bbb", padding: "4px",
-                          display: "flex", alignItems: "center", justifyContent: "center",
-                          transition: "color 0.15s, transform 0.15s", borderRadius: "2px",
-                        }}
+                        <button onClick={() => shuffleSingle(key)}
+                          aria-label={`${t.shuffleAria}: ${CATEGORIES[key].label[lang]}`}
+                          className="dc-focusable"
+                          style={{
+                            background: "none", border: "none", cursor: "pointer",
+                            color: cm ? "#9a9a9a" : "#6b6b6b",
+                            padding: "6px",
+                            minWidth: "28px", minHeight: "28px",
+                            display: "flex", alignItems: "center", justifyContent: "center",
+                            transition: "color 0.15s, transform 0.15s", borderRadius: "2px",
+                          }}
                           onMouseEnter={(e) => { e.currentTarget.style.color = cm ? "#FF4D00" : "#111"; e.currentTarget.style.transform = "rotate(-30deg)"; }}
-                          onMouseLeave={(e) => { e.currentTarget.style.color = cm ? "#444" : "#bbb"; e.currentTarget.style.transform = "rotate(0deg)"; }}
+                          onMouseLeave={(e) => { e.currentTarget.style.color = cm ? "#9a9a9a" : "#6b6b6b"; e.currentTarget.style.transform = "rotate(0deg)"; }}
                         ><RefreshIcon /></button>
                       )}
-                      <button onClick={() => toggleLock(key)} aria-label={isLocked ? "Unlock" : "Lock"}
-                        title={!canLock ? t.lockLimit : ""}
+                      <button onClick={() => toggleLock(key)}
+                        aria-label={`${isLocked ? t.unlockAria : t.lockAria}: ${CATEGORIES[key].label[lang]}${!canLock && !isLocked ? `. ${t.lockLimitAria}` : ""}`}
+                        aria-pressed={isLocked}
+                        aria-disabled={!canLock}
+                        className="dc-focusable"
                         style={{
                           background: "none", border: "none",
                           cursor: canLock ? "pointer" : "not-allowed",
-                          color: isLocked ? (cm ? "#FF4D00" : accent.bg) : cm ? "#333" : "#ccc",
-                          padding: "4px",
+                          color: isLocked ? (cm ? "#FF4D00" : accent.bg) : cm ? "#9a9a9a" : "#6b6b6b",
+                          padding: "6px",
+                          minWidth: "28px", minHeight: "28px",
                           display: "flex", alignItems: "center", justifyContent: "center",
-                          transition: "color 0.15s", opacity: canLock ? 1 : 0.35, borderRadius: "2px",
+                          transition: "color 0.15s", opacity: canLock ? 1 : 0.45, borderRadius: "2px",
                         }}
                         onMouseEnter={(e) => { if (canLock) e.currentTarget.style.color = isLocked ? "#E11D48" : cm ? "#FF4D00" : "#111"; }}
-                        onMouseLeave={(e) => { e.currentTarget.style.color = isLocked ? (cm ? "#FF4D00" : accent.bg) : cm ? "#333" : "#ccc"; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.color = isLocked ? (cm ? "#FF4D00" : accent.bg) : cm ? "#9a9a9a" : "#6b6b6b"; }}
                       ><LockIcon locked={isLocked} /></button>
                     </div>
                   )}
@@ -589,30 +693,36 @@ export default function DesignChallenge() {
                 <FlameIcon size={13} animated={cm} />
                 {WILDCARD.label[lang]}
               </div>
-              <div style={{ display: "flex", alignItems: "center", gap: "2px" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
                 {wildcard && !wildcardAnim && (
-                  <button onClick={reshuffleWildcard} aria-label="Shuffle wildcard" style={{
-                    background: "none", border: "none", cursor: "pointer",
-                    color: cm ? "#444" : "#bbb", padding: "4px",
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    transition: "color 0.15s, transform 0.15s", borderRadius: "2px",
-                  }}
+                  <button onClick={reshuffleWildcard}
+                    aria-label={t.shuffleWildcardAria}
+                    className="dc-focusable"
+                    style={{
+                      background: "none", border: "none", cursor: "pointer",
+                      color: cm ? "#9a9a9a" : "#6b6b6b",
+                      padding: "6px",
+                      minWidth: "28px", minHeight: "28px",
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      transition: "color 0.15s, transform 0.15s", borderRadius: "2px",
+                    }}
                     onMouseEnter={(e) => { e.currentTarget.style.color = cm ? "#FF4D00" : "#111"; e.currentTarget.style.transform = "rotate(-30deg)"; }}
-                    onMouseLeave={(e) => { e.currentTarget.style.color = cm ? "#444" : "#bbb"; e.currentTarget.style.transform = "rotate(0deg)"; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.color = cm ? "#9a9a9a" : "#6b6b6b"; e.currentTarget.style.transform = "rotate(0deg)"; }}
                   ><RefreshIcon /></button>
                 )}
-                <button onClick={removeWildcard} aria-label="Remove wildcard" style={{
-                  background: "none", border: "none", cursor: "pointer",
-                  color: cm ? "#444" : "#bbb", padding: "4px",
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  transition: "color 0.15s", borderRadius: "2px",
-                }}
-                  onMouseEnter={(e) => { e.currentTarget.style.color = "#E11D48"; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.color = cm ? "#444" : "#bbb"; }}
-                ><XIcon /></button>
               </div>
             </div>
-            <CardBox text={wildcardAnim || wildcard} accent={accent} isAccent={!!wildcardAnim} locked={false} accentColor={accent} chaos={cm} rotation={-1.8} />
+            <CardBox
+              text={wildcardAnim || wildcard}
+              accent={accent}
+              isAccent={!!wildcardAnim}
+              locked={false}
+              accentColor={accent}
+              chaos={cm}
+              rotation={-1.8}
+              onClick={wildcard && !wildcardAnim ? removeWildcard : undefined}
+              ariaLabel={wildcard && !wildcardAnim ? `${t.removeWildcardAria}: ${wildcard}` : undefined}
+            />
           </div>
         )}
 
@@ -626,21 +736,27 @@ export default function DesignChallenge() {
 
         {/* Buttons */}
         <div style={{ marginTop: "clamp(40px, 6vw, 64px)", display: "flex", alignItems: "center", gap: "16px", flexWrap: "wrap" }}>
-          <button onClick={generateAll} disabled={spinning} style={{
-            display: "inline-flex", alignItems: "center", gap: "12px",
-            fontFamily: cm ? "'Space Mono', monospace" : "'Clash Display', 'Satoshi', sans-serif",
-            fontSize: "clamp(15px, 2.5vw, 18px)", fontWeight: 600,
-            letterSpacing: cm ? "1px" : "-0.3px",
-            color: cm ? "#000" : accent.text,
-            background: cm ? "#FF4D00" : accent.bg,
-            border: "none", borderRadius: cm ? "0px" : "2px",
-            padding: "18px 40px",
-            cursor: spinning ? "wait" : "pointer",
-            textTransform: cm ? "uppercase" : "none",
-            transition: "all 0.4s cubic-bezier(0.23, 1, 0.32, 1)",
-            opacity: spinning ? 0.7 : 1,
-            transform: spinning ? "scale(0.97)" : "scale(1)",
-          }}
+          <button onClick={generateAll}
+            disabled={spinning}
+            aria-busy={spinning}
+            aria-label={spinning ? t.generatingAria : undefined}
+            className="dc-focusable"
+            style={{
+              display: "inline-flex", alignItems: "center", gap: "12px",
+              fontFamily: cm ? "'Space Mono', monospace" : "'Clash Display', 'Satoshi', sans-serif",
+              fontSize: "clamp(15px, 2.5vw, 18px)", fontWeight: 600,
+              letterSpacing: cm ? "1px" : "-0.3px",
+              color: cm ? "#000" : accent.text,
+              background: cm ? "#FF4D00" : accent.bg,
+              border: "none", borderRadius: cm ? "0px" : "2px",
+              padding: "18px 40px",
+              minHeight: "48px",
+              cursor: spinning ? "wait" : "pointer",
+              textTransform: cm ? "uppercase" : "none",
+              transition: "all 0.4s cubic-bezier(0.23, 1, 0.32, 1)",
+              opacity: spinning ? 0.75 : 1,
+              transform: spinning ? "scale(0.97)" : "scale(1)",
+            }}
             onMouseEnter={(e) => { if (!spinning) { e.currentTarget.style.transform = cm ? "scale(1.02) rotate(-1deg)" : "scale(1.02)"; }}}
             onMouseLeave={(e) => { e.currentTarget.style.transform = spinning ? "scale(0.97)" : "scale(1)"; }}
           >
@@ -653,15 +769,17 @@ export default function DesignChallenge() {
               onClick={generateWildcard}
               onMouseEnter={() => setFlameHover(true)}
               onMouseLeave={() => setFlameHover(false)}
+              className="dc-focusable"
               style={{
                 display: "inline-flex", alignItems: "center", gap: "8px",
                 fontFamily: cm ? "'Space Mono', monospace" : "'Clash Display', 'Satoshi', sans-serif",
                 fontSize: "clamp(13px, 2vw, 15px)", fontWeight: 600,
                 letterSpacing: "-0.2px",
-                color: flameHover ? "#FF4D00" : "#555",
+                color: flameHover ? "#FF4D00" : "#3f3f3f",
                 background: "transparent",
-                border: flameHover ? "1.5px dashed #FF4D00" : "1.5px dashed #ccc",
+                border: flameHover ? "1.5px dashed #FF4D00" : "1.5px dashed #767676",
                 borderRadius: "2px", padding: "17px 28px", cursor: "pointer",
+                minHeight: "48px",
                 transition: "all 0.2s ease",
                 transform: flameHover ? "scale(1.02)" : "scale(1)",
               }}
@@ -674,19 +792,20 @@ export default function DesignChallenge() {
           {generated && !spinning && (
             <button
               onClick={copyBrief}
-              aria-label={t.copyBtn}
+              className="dc-focusable"
               style={{
                 display: "inline-flex", alignItems: "center", gap: "8px",
                 fontFamily: cm ? "'Space Mono', monospace" : "'Clash Display', 'Satoshi', sans-serif",
                 fontSize: "clamp(13px, 2vw, 15px)", fontWeight: 600,
                 letterSpacing: "-0.2px",
-                color: copied ? (cm ? "#FF4D00" : accent.bg) : cm ? "#888" : "#555",
+                color: copied ? (cm ? "#FF4D00" : accent.bg) : cm ? "#bbb" : "#3f3f3f",
                 background: "transparent",
                 border: copied
                   ? `1.5px solid ${cm ? "#FF4D00" : accent.bg}`
-                  : cm ? "1.5px solid #333" : "1.5px solid #ddd",
+                  : cm ? "1.5px solid #555" : "1.5px solid #767676",
                 borderRadius: cm ? "0px" : "2px",
                 padding: "17px 28px", cursor: "pointer",
+                minHeight: "48px",
                 textTransform: cm ? "uppercase" : "none",
                 transition: "all 0.2s ease",
               }}
@@ -698,8 +817,8 @@ export default function DesignChallenge() {
               }}
               onMouseLeave={(e) => {
                 if (!copied) {
-                  e.currentTarget.style.borderColor = cm ? "#333" : "#ddd";
-                  e.currentTarget.style.color = cm ? "#888" : "#555";
+                  e.currentTarget.style.borderColor = cm ? "#555" : "#767676";
+                  e.currentTarget.style.color = cm ? "#bbb" : "#3f3f3f";
                 }
               }}
             >
@@ -713,10 +832,11 @@ export default function DesignChallenge() {
           <div style={{
             marginTop: "24px", fontFamily: "'Space Mono', monospace",
             fontSize: "11px", letterSpacing: "2px", textTransform: "uppercase",
-            color: cm ? "#222" : "#ccc", transition: "color 0.5s ease",
+            color: cm ? "#888" : "#6b6b6b", transition: "color 0.5s ease",
           }}>{t.briefLabel} #{String(count).padStart(3, "0")}</div>
         )}
       </section>
+      </main>
 
       <footer style={{
         position: "relative", zIndex: 10,
@@ -727,14 +847,14 @@ export default function DesignChallenge() {
         transition: "border-color 0.5s ease",
       }}>
         <div style={{
-          fontFamily: "'Space Mono', monospace", fontSize: "10px",
+          fontFamily: "'Space Mono', monospace", fontSize: "11px",
           letterSpacing: "2px", textTransform: "uppercase",
-          color: cm ? "#222" : "#bbb", transition: "color 0.5s ease",
+          color: cm ? "#aaa" : "#5a5a5a", transition: "color 0.5s ease",
         }}>{t.footer}</div>
         <div style={{
-          fontFamily: "'Space Mono', monospace", fontSize: "10px",
+          fontFamily: "'Space Mono', monospace", fontSize: "11px",
           letterSpacing: "1.5px",
-          color: cm ? "#222" : "#ccc", transition: "color 0.5s ease",
+          color: cm ? "#aaa" : "#5a5a5a", transition: "color 0.5s ease",
         }}>{totalCombos.toLocaleString()}+ {t.combinations}</div>
       </footer>
     </div>
